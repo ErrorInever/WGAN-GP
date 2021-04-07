@@ -15,17 +15,17 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 transforms = transforms.Compose(
 	[
-		transforms.Resize(IMAGE_SIZE),
+		transforms.Resize(cfg.IMAGE_SIZE),
 		transforms.ToTensor(),
 		transforms.Normalize(
-			[0.5 for _ in range(CHANNELS_IMG)], [0.5 for _ in range(CHANNELS_IMG)]),
+			[0.5 for _ in range(cfg.CHANNELS_IMG)], [0.5 for _ in range(cfg.CHANNELS_IMG)]),
 	]
 )
 
 dataset = datasets.MNIST(root="dataset/", transform=transforms, download=True)
 loader = DataLoader(
 	dataset,
-	batch_size=BATCH_SIZE,
+	batch_size=cfg.BATCH_SIZE,
 	shuffle=True,
 )
 
@@ -87,7 +87,7 @@ for epoch in range(cfg.NUM_EPOCHS):
 				fake = gen(fixed_noise)
 				# take out (up to) 32 examples
 				img_grid_real = torchvision.utils.make_grid(real[:32], normalize=True)
-				img_grid_fake = torchvision.utils.make_grid(fake[:32], 				
+				img_grid_fake = torchvision.utils.make_grid(fake[:32], normalize=True)
 				writer_real.add_image("Real", img_grid_real, global_step=step)
 				writer_fake.add_image("Fake", img_grid_fake, global_step=step)
 

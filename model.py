@@ -49,7 +49,7 @@ class Critic(nn.Module):
 
 		self.model = nn.Sequential(
 			nn.Conv2d(channels_img, features_d, kernel_size=4, stride=2, padding=1),
-			nn.LeakyRelu(0.2),
+			nn.LeakyReLU(0.2),
 			self._block(features_d, features_d * 2, 4, 2, 1),
 			self._block(features_d * 2, features_d * 4, 4, 2, 1),
 			self._block(features_d * 4, features_d * 8, 4, 2, 1),
@@ -68,7 +68,7 @@ class Critic(nn.Module):
 					bias=False
 				),
 				nn.InstanceNorm2d(out_channels, affine=True),
-				nn.LeakyRelu(0.2)
+				nn.LeakyReLU(0.2)
 			)
 
 
