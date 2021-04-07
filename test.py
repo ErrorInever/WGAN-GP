@@ -1,5 +1,5 @@
 import unittest
-from model import Discriminator, Generator
+from model import Critic, Generator
 
 
 class TestModels(unittest.TestCase):
@@ -14,8 +14,8 @@ class TestModels(unittest.TestCase):
 		self.z = torch.randn((N, noise_dim, 1, 1))
 
 
-	def test_shape_discriminator(self):
-		disc = Discriminator(self.in_channels, 8)
+	def test_shape_critic(self):
+		disc = Critic(self.in_channels, 8)
 		self.assertEqual(disc(self.x).shape == (self.N, 1, 1, 1))
 
 	def test_shape_generator(self):

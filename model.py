@@ -42,10 +42,10 @@ class Generator(nn.Module):
  		return self.model(x)
 
 
-class Discriminator(nn.Module):
+class Critic(nn.Module):
 
 	def __init__(self, channels_img, features_d):
-		super(Discriminator, self).__init__()
+		super(Critic, self).__init__()
 
 		self.model = nn.Sequential(
 			nn.Conv2d(channels_img, features_d, kernel_size=4, stride=2, padding=1),
