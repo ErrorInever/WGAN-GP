@@ -24,22 +24,22 @@ class Generator(nn.Module):
 				nn.Tanh()
 			)
 
-    def _block(self, in_channels, out_channels, kernel_size, stride, padding):
-        return nn.Sequential(
-            nn.ConvTranspose2d(
-                in_channels,
-                out_channels,
-                kernel_size,
-                stride,
-                padding,
-                bias=False
-            ),
-            nn.BatchNorm2d(out_channels),
-            nn.ReLU()
-        )
+	def _block(self, in_channels, out_channels, kernel_size, stride, padding):
+		return nn.Sequential(
+				nn.ConvTranspose2d(
+					in_channels,
+					out_channels,
+					kernel_size,
+					stride,
+					padding,
+					bias=False
+				),
+				nn.BatchNorm2d(out_channels),
+				nn.ReLU()
+			)
 
- 	def forward(self, x):
- 		return self.model(x)
+	def forward(self, x):
+		return self.model(x)
 
 
 class Critic(nn.Module):
