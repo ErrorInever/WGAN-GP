@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
+import argparse
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
@@ -9,8 +10,15 @@ from torch.utils.tensorboard import SummaryWriter
 from utils import gradient_penalty, save_checkpoint, load_checkpoint
 from model import Critic, Generator, init_weights
 from config import cfg
+from metric_logger import MetricLogger 
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='dcGAN')
+    parser.add_argument('--api_key', dest='api_key', help='losswise api key', default=None, type=str)
+    return parser.parse_args()
 
 
+args = parse_args()
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 transforms = transforms.Compose(
@@ -23,7 +31,7 @@ transforms = transforms.Compose(
 )
 
 dataset = datasets.MNIST(root="dataset/", transform=transforms, download=True)
-loader = DataLoader(
+dataloader = DataLoader(
 	dataset,
 	batch_size=cfg.BATCH_SIZE,
 	shuffle=True,
@@ -39,19 +47,18 @@ init_weights(critic)
 opt_gen = optim.Adam(gen.parameters(), lr=cfg.LEARNING_RATE, betas=(0.0, 0.9))
 opt_critic = optim.Adam(critic.parameters(), lr=cfg.LEARNING_RATE, betas=(0.0, 0.9))
 
-# draw results
-fixed_noise = torch.rand(32, cfg.Z_DIM, 1, 1).to(device)
-writer_real = SummaryWriter(f"logs/GAN_MNIST/real")
-writer_fake = SummaryWriter(f"logs/GAN_MNIST/fake")
-step = 0
-
 gen.train()
 critic.train()
+
+freq = 100
+num_sumples = 16
+static_noise = torch.randn(num_sumples, cfg.Z_DIM, 1, 1, device=device)
+metric_logger = MetricLogger('WGAN-GP', 'MNIST', losswise_api_key=args.api_key, tensorboard=True)
 
 # main loop
 
 for epoch in range(cfg.NUM_EPOCHS):
-	for batch_idx, (real, _) in enumerate(loader):
+	for n_batch, (real, _) in enumerate(dataloader):
 		real = real.to(device)
 		cur_batch_size = real.shape[0]
 
@@ -69,6 +76,7 @@ for epoch in range(cfg.NUM_EPOCHS):
 			loss_critic.backward(retain_graph=True)
 			opt_critic.step()
 
+
 		# Train generator: max E[critic(gen_fake)] <--> min -E(critic(gen_fake))
 		gen_fake = critic(fake).reshape(-1)
 		loss_gen = -1 * torch.mean(gen_fake)
@@ -76,19 +84,9 @@ for epoch in range(cfg.NUM_EPOCHS):
 		loss_gen.backward()
 		opt_gen.step()
 
-		# print to tensorboard
-		if batch_idx % 100 == 0 and batch_idx > 0:
-			print(
-				f"Epoch [{epoch}/{cfg.NUM_EPOCHS}] Batch {batch_idx}/{len(loader)} \
-				Loss D: {loss_critic:.4f}, loss G: {loss_gen:.4f}"
-			)
-
+		if n_batch % freq == 0:
 			with torch.no_grad():
-				fake = gen(fixed_noise)
-				# take out (up to) 32 examples
-				img_grid_real = torchvision.utils.make_grid(real[:32], normalize=True)
-				img_grid_fake = torchvision.utils.make_grid(fake[:32], normalize=True)
-				writer_real.add_image("Real", img_grid_real, global_step=step)
-				writer_fake.add_image("Fake", img_grid_fake, global_step=step)
-
-			step += 1
+				metric_logger.log(loss_critic, loss_gen, epoch, n_batch, len(dataloader))
+				static_fake_data = gen(static_noise)
+				metric_logger.log_image(static_fake_data, num_sumples, epoch, n_batch, len(dataloader))
+				metric_logger.display_status(epoch, cfg.NUM_EPOCHS, n_batch, len(dataloader), D_loss, G_loss)
