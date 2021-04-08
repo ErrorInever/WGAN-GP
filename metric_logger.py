@@ -9,7 +9,7 @@ import logging
 from tensorboardX import SummaryWriter
 from matplotlib import pyplot as plt
 from IPython import display
-from config.conf import cfg
+from config import cfg
 
 logger = logging.getLogger(__name__)
 
