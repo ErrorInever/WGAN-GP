@@ -89,4 +89,5 @@ for epoch in range(cfg.NUM_EPOCHS):
 				metric_logger.log(loss_critic, loss_gen, epoch, n_batch, len(dataloader))
 				static_fake_data = gen(static_noise)
 				metric_logger.log_image(static_fake_data, num_sumples, epoch, n_batch, len(dataloader))
-				metric_logger.display_status(epoch, cfg.NUM_EPOCHS, n_batch, len(dataloader), D_loss, G_loss)
+				metric_logger.display_status(epoch, cfg.NUM_EPOCHS, n_batch, len(dataloader), 
+					loss_critic, loss_gen)
