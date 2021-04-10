@@ -13,7 +13,7 @@ from config import cfg
 from metric_logger import MetricLogger 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='dcGAN')
+    parser = argparse.ArgumentParser(description='WGAN-GP')
     parser.add_argument('--api_key', dest='api_key', help='losswise api key', default=None, type=str)
     return parser.parse_args()
 
