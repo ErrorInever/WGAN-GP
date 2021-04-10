@@ -33,7 +33,7 @@ class Metric_logger:
                 track_git=False
             )
             self.losswise_loss = self.session.graph('loss', kind='min')
-            if self.show_accow:
+            if self.show_acc:
                 self.graph_acc = self.session.graph('accuracy', kind='max')
             print("Done")
 
@@ -101,7 +101,7 @@ class Metric_logger:
             self.graph_acc.append(step, {'D(x)': acc_real, 'D(G(z))': acc_fake})
 
         if self.losswise_api_key:
-            self.losswise_loss.append(step, {'Critic': dis_loss}, {'Generator': gen_loss})
+            self.losswise_loss.append(step, {'Critic': dis_loss, 'Generator': gen_loss})
 
 
     @staticmethod
@@ -123,7 +123,7 @@ class Metric_logger:
         horizontal_grid = torchvision.utils.make_grid(images, normalize=normalize, scale_each=True)
         nrows = int(np.sqrt(num_samples))
         grid = torchvision.utils.make_grid(images, nrow=nrows, normalize=normalize, scale_each=True)
-        step = MetricLogger._step(epoch, batch_idx, num_batches)
+        step = Metric_logger._step(epoch, batch_idx, num_batches)
         img_name = f'{self.project_name}/images{step}'
         self.save_torch_images(horizontal_grid, grid, epoch, batch_idx)
 
@@ -171,7 +171,7 @@ class Metric_logger:
 
     @staticmethod
     def _save_images(fig, epoch, batch_idx, out_dir, comment=''):
-        MetricLogger._make_dir(out_dir)
+        Metric_logger._make_dir(out_dir)
         fig.savefig('{}/{}_epoch_{}_batch_{}.png'.format(out_dir, comment, epoch, batch_idx))
 
     @staticmethod

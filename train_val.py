@@ -9,8 +9,8 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from model import Critic, Generator, init_weights
 from config import cfg
-from metric_logger import MetricLogger 
-
+from metric_logger import Metric_logger 
+from train import train_one_epoch
 
 
 
@@ -57,12 +57,12 @@ static_noise = torch.randn(num_sumples, cfg.LATENT_Z_DIMENSION, 1, 1, device=dev
 #metric_logger = MetricLogger('WGAN-GP', 'MNIST', losswise_api_key=args.api_key, tensorboard=True)
 
 # main loop
-metric_logger = MetricLogger('WGAN', args.api_key)
+metric_logger = Metric_logger('WGAN', args.api_key)
 
 start_time = time.time()
 for epoch in range(cfg.NUM_EPOCHS):
 	train_one_epoch(epoch, dataloader, gen, critic, opt_gen, opt_critic, static_noise, 
-		device, metric_logger, freq=100)
+		device, metric_logger, num_sumples, freq=100)
 
 
 total_time = time.time() - start_time

@@ -1,14 +1,14 @@
 import torch
 import time
 from functions import gradient_penalty
-
+from config import cfg
 
 def train_one_epoch(epoch, dataloader, gen, critic, opt_gen, opt_critic,
 	static_noise, device, metric_logger, num_samples, freq=100):
 	"""
 	Train models
 	"""
-	for batch_idx, (real, _) in enumerate(dataloader):
+	for batch_idx, (real_data, _) in enumerate(dataloader):
 		real_data = real_data.to(device)
 		cur_batch_size = real_data.shape[0]
 
@@ -30,10 +30,10 @@ def train_one_epoch(epoch, dataloader, gen, critic, opt_gen, opt_critic,
 			opt_critic.step()
 
 		# Train generator: maximize E[critic(gen_fake)] <--> minimize -E(critic(gen_fake))
-		gen_fake = critic(fake).reshape(-1)
+		gen_fake = critic(fake_data).reshape(-1)
 		loss_gen = -1 * torch.mean(gen_fake)
 		gen.zero_grad()
-		loss.gen.backward()
+		loss_gen.backward()
 		opt_gen.step()
 
 		# Metrics
