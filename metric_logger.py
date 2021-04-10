@@ -4,8 +4,11 @@ import numpy as np
 
 class Metric_logger:
     """Helper class"""
-    def __init__(self, project_name):
+    def __init__(self, project_name, losswise_api_key, tensorboard):
         self.project_name = project_name
+
+        if losswise_api_key:
+            
 
 
     @staticmethod
