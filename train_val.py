@@ -40,7 +40,7 @@ dataloader = DataLoader(
 )
 
 # init models 
-gen = Generator(cfg.Z_DIM, cfg.CHANNELS_IMG, cfg.FEATURES_GEN).to(device)
+gen = Generator(cfg.LATENT_Z_DIMENSION, cfg.CHANNELS_IMG, cfg.FEATURES_GEN).to(device)
 critic = Critic(cfg.CHANNELS_IMG, cfg.FEATURES_CRITIC).to(device)
 # init weights of models
 init_weights(gen)
@@ -53,7 +53,7 @@ gen.train()
 critic.train()
 
 num_sumples = 16
-static_noise = torch.randn(num_sumples, cfg.Z_DIM, 1, 1, device=device)
+static_noise = torch.randn(num_sumples, cfg.LATENT_Z_DIMENSION, 1, 1, device=device)
 #metric_logger = MetricLogger('WGAN-GP', 'MNIST', losswise_api_key=args.api_key, tensorboard=True)
 
 # main loop
