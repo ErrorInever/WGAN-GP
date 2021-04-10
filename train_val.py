@@ -3,14 +3,16 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import argparse
+import time
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
-from utils import gradient_penalty, save_checkpoint, load_checkpoint
 from model import Critic, Generator, init_weights
 from config import cfg
 from metric_logger import MetricLogger 
+
+
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='WGAN-GP')
@@ -40,7 +42,7 @@ dataloader = DataLoader(
 # init models 
 gen = Generator(cfg.Z_DIM, cfg.CHANNELS_IMG, cfg.FEATURES_GEN).to(device)
 critic = Critic(cfg.CHANNELS_IMG, cfg.FEATURES_CRITIC).to(device)
-# init weights
+# init weights of models
 init_weights(gen)
 init_weights(critic)
 # init optimizers
@@ -50,44 +52,19 @@ opt_critic = optim.Adam(critic.parameters(), lr=cfg.LEARNING_RATE, betas=(0.0, 0
 gen.train()
 critic.train()
 
-freq = 100
 num_sumples = 16
 static_noise = torch.randn(num_sumples, cfg.Z_DIM, 1, 1, device=device)
-metric_logger = MetricLogger('WGAN-GP', 'MNIST', losswise_api_key=args.api_key, tensorboard=True)
+#metric_logger = MetricLogger('WGAN-GP', 'MNIST', losswise_api_key=args.api_key, tensorboard=True)
 
 # main loop
+metric_logger = MetricLogger('WGAN', args.api_key)
 
+start_time = time.time()
 for epoch in range(cfg.NUM_EPOCHS):
-	for n_batch, (real, _) in enumerate(dataloader):
-		real = real.to(device)
-		cur_batch_size = real.shape[0]
-
-		# Train critic: max E[critic(real) - E[critic(fake)]] 
-		# i.e. minimizing the negative of that
-		for _ in range(cfg.CRITIC_ITERATIONS):
-			noise = torch.randn(cur_batch_size, cfg.Z_DIM, 1, 1).to(device)
-			fake = gen(noise)
-			critic_real = critic(real).reshape(-1)
-			critic_fake = critic(fake).reshape(-1)
-			gp = gradient_penalty(critic, real, fake, device=device)
-			loss_critic = (-1 * (torch.mean(critic_real) - torch.mean(critic_fake)) 
-				+ cfg.LAMBDA_GRADIENT_PENALTY * gp)
-			critic.zero_grad()
-			loss_critic.backward(retain_graph=True)
-			opt_critic.step()
+	train_one_epoch(epoch, dataloader, gen, critic, opt_gen, opt_critic, static_noise, 
+		device, metric_logger, freq=100)
 
 
-		# Train generator: max E[critic(gen_fake)] <--> min -E(critic(gen_fake))
-		gen_fake = critic(fake).reshape(-1)
-		loss_gen = -1 * torch.mean(gen_fake)
-		gen.zero_grad()
-		loss_gen.backward()
-		opt_gen.step()
-
-		if n_batch % freq == 0:
-			with torch.no_grad():
-				metric_logger.log(loss_critic, loss_gen, epoch, n_batch, len(dataloader))
-				static_fake_data = gen(static_noise)
-				metric_logger.log_image(static_fake_data, num_sumples, epoch, n_batch, len(dataloader))
-				metric_logger.display_status(epoch, cfg.NUM_EPOCHS, n_batch, len(dataloader), 
-					loss_critic, loss_gen)
+total_time = time.time() - start_time
+total_time_str = str(datetime.timedelta(seconds=int(total_time)))
+print(f"Training time {total_time_str}")
