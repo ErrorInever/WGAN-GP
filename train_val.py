@@ -7,7 +7,6 @@ import time
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from datetime import datetime
 from model import Critic, Generator, init_weights
 from config import cfg
 from metric_logger import Metric_logger 
@@ -67,5 +66,4 @@ for epoch in range(cfg.NUM_EPOCHS):
 
 
 total_time = time.time() - start_time
-total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-print(f"Training time {total_time_str}")
+print(f"Training time {total_time}")
