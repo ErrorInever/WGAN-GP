@@ -7,6 +7,7 @@ import time
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
+from datetime import datetime
 from model import Critic, Generator, init_weights
 from config import cfg
 from metric_logger import Metric_logger 
