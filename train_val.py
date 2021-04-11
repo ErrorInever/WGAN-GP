@@ -86,7 +86,7 @@ for epoch in range(cfg.NUM_EPOCHS):
 	train_one_epoch(epoch, dataloader, gen, critic, opt_gen, opt_critic, static_noise, 
 		device, metric_logger, num_sumples, freq=100)
 	# save models
-	if epoch % cfg.SAVE_EACH_EPOCH:
+	if epoch % cfg.SAVE_EACH_EPOCH == 0:
 		save_models(epoch, gen, critic)
 
 
