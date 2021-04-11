@@ -19,7 +19,7 @@ class Metric_logger:
         self.project_name = project_name
         self.losswise_api_key = losswise_api_key
         self.show_acc = show_accuracy
-        self.data_subdir = f"{os.path.join(OUT_DIR, self.project_name)}/imgdata"
+        self.data_subdir = f"{os.path.join(cfg.OUT_DIR, self.project_name)}/imgdata"
 
         self.loss = {'D':[], 'G':[]}
         self.acc = {'Dr':[], 'Df':[]}
