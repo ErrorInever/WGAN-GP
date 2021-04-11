@@ -1,3 +1,3 @@
-# WGANGP_v1
+# WGAN-GP
 
-wgan-gp implementation
+wgan-gp pytorch implementation
