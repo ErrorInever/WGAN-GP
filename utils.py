@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import os
 
 
 def gradient_penalty(critic, real, fake, device="cpu"):
@@ -24,12 +25,18 @@ def gradient_penalty(critic, real, fake, device="cpu"):
     return gradient_penalty
 
 
-def save_checkpoint(state, filename="MNIST_wgan_gp.pth.tar"):
+def save_models(epoch, gen, critic):
     print("=> Saving checkpoint")
-    torch.save(state, filename)
+    torch.save(gen.state_dict(), f'./generator_st_{epoch}.pkl')
+    torch.save(critic.state_dict(), f'./critic_st_{epoch}.pkl')
+    print(f"=> Models save to ./generator_st_{epoch}.pkl & ./critic_st_{epoch}.pkl")
 
 
-def load_checkpoint(checkpoint, gen, disc):
-    print("=> Loading checkpoint")
-    gen.load_state_dict(checkpoint['gen'])
-    disc.load_state_dict(checkpoint['disc'])
+def load_models(gen, critic, generator_filename, critic_filename):
+    gen_path = os.path.join(os.getcwd(), generator_filename)
+    critic_path = os.path.join(os.getcwd(), critic_filename)
+    print("=> Load models...")
+    gen.load_state_dict(torch.load(gen_path))
+    critic.load_state_dict(torch.load(critic_path))
+    print(f"=> Generator model loaded from {gen_path}")
+    print(f"=> Critic model loaded from {critic_path}")
