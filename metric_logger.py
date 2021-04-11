@@ -172,7 +172,7 @@ class Metric_logger:
     @staticmethod
     def _save_images(fig, epoch, batch_idx, out_dir, comment=''):
         Metric_logger._make_dir(out_dir)
-        fig.savefig('{}/{}_epoch_{}_batch_{}.png'.format(out_dir, comment, epoch, batch_idx))
+        fig.savefig('{}/{}epoch_{}_batch_{}.png'.format(out_dir, comment, epoch, batch_idx))
 
     @staticmethod
     def _make_dir(directory):
