@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import os
+from config import cfg
 
 
 def gradient_penalty(critic, real, fake, device="cpu"):
@@ -27,9 +28,9 @@ def gradient_penalty(critic, real, fake, device="cpu"):
 
 def save_models(epoch, gen, critic):
     print("=> Saving checkpoint")
-    torch.save(gen.state_dict(), f'./generator_st_{epoch}.pkl')
-    torch.save(critic.state_dict(), f'./critic_st_{epoch}.pkl')
-    print(f"=> Models save to ./generator_st_{epoch}.pkl & ./critic_st_{epoch}.pkl")
+    torch.save(gen.state_dict(), f'{cfg.SAVE_MODELS_PATH}/generator_st_{epoch}.pkl')
+    torch.save(critic.state_dict(), f'{cfg.SAVE_MODELS_PATH}/critic_st_{epoch}.pkl')
+    print(f"=> Models save to {cfg.SAVE_MODELS_PATH}/generator_st_{epoch}.pkl & {cfg.SAVE_MODELS_PATH}/critic_st_{epoch}.pkl")
 
 
 def load_models(gen, critic, generator_filename, critic_filename):
