@@ -1,3 +1,3 @@
 # WGANGP_v1
 
-TEST PROJECT
+wgan-gp implementation
