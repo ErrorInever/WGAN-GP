@@ -84,7 +84,7 @@ static_noise = torch.randn(num_sumples, cfg.LATENT_Z_DIMENSION, 1, 1, device=dev
 metric_logger = Metric_logger('WGAN-GP', args.api_key)
 
 start_time = time.time()
-for epoch in range(cfg.NUM_EPOCHS):
+for epoch in range(1, cfg.NUM_EPOCHS + 1):
 	train_one_epoch(epoch, dataloader, gen, critic, opt_gen, opt_critic, static_noise, 
 		device, metric_logger, num_sumples, freq=100)
 	# save models
