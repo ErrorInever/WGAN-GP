@@ -91,6 +91,6 @@ for epoch in range(cfg.NUM_EPOCHS):
 	if epoch % cfg.SAVE_EACH_EPOCH == 0:
 		save_models(epoch, gen, critic)
 
-
 total_time = time.time() - start_time
 print(f"=> Training time {total_time}")
+metric_logger.save_local_metrics()

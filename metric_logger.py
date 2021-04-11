@@ -158,14 +158,14 @@ class Metric_logger:
 
 
     def save_local_metrics(self):
-        with open(f'{self.project_name}/loss_g.dt', 'wb') as fp:
+        with open(f'{cfg.OUT_DIR}/loss_g.dt', 'wb') as fp:
             pickle.dump(self.loss['G'], fp)
-        with open(f'{self.project_name}/loss_d.dt', 'wb') as fp:
+        with open(f'{cfg.OUT_DIR}/loss_d.dt', 'wb') as fp:
             pickle.dump(self.loss['D'], fp)
         if self.show_acc:
-            with open(f'{self.project_name}/acc_real.dt', 'wb') as fp:
+            with open(f'{cfg.OUT_DIR}/acc_real.dt', 'wb') as fp:
                 pickle.dump(self.acc['Dr'], fp)
-            with open(f'{self.project_name}/acc_fake.dt', 'wb') as fp:
+            with open(f'{cfg.OUT_DIR}/acc_fake.dt', 'wb') as fp:
                 pickle.dump(self.acc['Df'], fp)
 
 
