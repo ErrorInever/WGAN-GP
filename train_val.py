@@ -90,7 +90,9 @@ for epoch in range(1, cfg.NUM_EPOCHS + 1):
 	train_one_epoch(epoch, dataloader, gen, critic, opt_gen, opt_critic, static_noise, 
 		device, metric_logger, num_sumples, freq=100)
 	# save models
-	if epoch % cfg.SAVE_EACH_EPOCH == 0:
+	if epoch == cfg.NUM_EPOCHS:
+		save_models(epoch, gen, critic)
+	elif epoch % cfg.SAVE_EACH_EPOCH == 0:
 		save_models(epoch, gen, critic)
 
 total_time = time.time() - start_time
