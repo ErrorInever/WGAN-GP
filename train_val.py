@@ -79,7 +79,7 @@ gen.train()
 critic.train()
 
 num_sumples = 16
-static_noise = torch.randn(num_sumples, cfg.LATENT_Z_DIMENSION, 1, 1, device=device)
+static_noise = torch.randn(cfg.BATCH_SIZE, cfg.LATENT_Z_DIMENSION, 1, 1, device=device)
 #metric_logger = MetricLogger('WGAN-GP', 'MNIST', losswise_api_key=args.api_key, tensorboard=True)
 
 # main loop
