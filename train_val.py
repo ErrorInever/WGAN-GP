@@ -45,7 +45,7 @@ print(f"=> Run on device {device}")
 
 transforms = transforms.Compose(
 	[
-		transforms.Resize(cfg.IMAGE_SIZE),
+		transforms.Resize(cfg.IMG_SIZE),
 		transforms.ToTensor(),
 		transforms.Normalize(
 			[0.5 for _ in range(cfg.CHANNELS_IMG)], [0.5 for _ in range(cfg.CHANNELS_IMG)]),
@@ -61,8 +61,10 @@ dataloader = DataLoader(
 
 # init models 
 print("=> Init models")
-gen = Generator(cfg.LATENT_Z_DIMENSION, cfg.CHANNELS_IMG, cfg.FEATURES_GEN).to(device)
-critic = Critic(cfg.CHANNELS_IMG, cfg.FEATURES_CRITIC).to(device)
+gen = Generator(cfg.LATENT_Z_DIMENSION, cfg.CHANNELS_IMG, cfg.FEATURES_GEN, 
+	cfg.NUM_CLASSES, cfg.IMG_SIZE, cfg.GEN_EMBEDDING).to(device)
+critic = Critic(cfg.CHANNELS_IMG, cfg.FEATURES_CRITIC, cfg.NUM_CLASSES, 
+	cfg.IMG_SIZE).to(device)
 # init weights of models
 if args.load_gen and args.load_crt:
 	load_models(gen, critic, args.load_gen, args.load_crt)

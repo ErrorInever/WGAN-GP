@@ -4,13 +4,13 @@ import os
 from config import cfg
 
 
-def gradient_penalty(critic, real, fake, device="cpu"):
+def gradient_penalty(critic, labels, real, fake, device="cpu"):
     BATCH_SIZE, C, H, W = real.shape
     alpha = torch.rand((BATCH_SIZE, 1, 1, 1)).repeat(1, C, H, W).to(device)
     interpolated_images = real * alpha + fake * (1 - alpha)
 
     # Calculate critic scores
-    mixed_scores = critic(interpolated_images)
+    mixed_scores = critic(interpolated_images, labels)
 
     # Take the gradient of the scores with respect to the images
     gradient = torch.autograd.grad(
@@ -41,3 +41,9 @@ def load_models(gen, critic, generator_filename, critic_filename):
     critic.load_state_dict(torch.load(critic_path))
     print(f"=> Generator model loaded from {gen_path}")
     print(f"=> Critic model loaded from {critic_path}")
+
+def load_gen(gen, filename):
+    print("=> Load generator...")
+    gen_path = os.path.join(os.getcwd(), filename)
+    gen.load_state_dict(torch.load(gen_path))
+    print(f"=> Generator model loaded from {gen_path}")
