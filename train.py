@@ -3,6 +3,7 @@ import time
 from functions import gradient_penalty
 from config import cfg
 
+
 def train_one_epoch(epoch, dataloader, gen, critic, opt_gen, opt_critic,
 	static_noise, device, metric_logger, num_samples, freq=100):
 	"""

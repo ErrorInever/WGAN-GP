@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 
 
-
-
 def gradient_penalty(critic, real, fake, device):
 	"""Gradient penalty"""
 	BATCH_SIZE, C, H, W, = real.shape

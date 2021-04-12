@@ -11,8 +11,6 @@ from IPython import display
 from config import cfg
 
 
-
-
 class Metric_logger:
     """Metric class"""
     def __init__(self, project_name, losswise_api_key, show_accuracy=False):
