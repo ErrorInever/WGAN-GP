@@ -1,3 +1,0 @@
-# WGAN-GP
-
-NOT READY
