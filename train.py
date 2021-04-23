@@ -110,6 +110,8 @@ if __name__ == '__main__':
     elif args.device == 'tpu':
         import torch_xla.core.xla_model as xm
         device = xm.xla_device()
+    else:
+        device = "cpu"
 
     print(f"=> Called with args {args.__dict__}")
     print(f"=> Config params {cfg.__dict__}")

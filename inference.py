@@ -28,8 +28,11 @@ if __name__ == '__main__':
     args = parse_args()
     assert args.path_ckpt, 'Path to checkpoint not specified'
 
+    if args.gif and args.num_samples < 2:
+        raise ValueError('for GIF num_samples must be greater than 1')
+
     if not args.out_path:
-        out_path = 'DCGAN-Anime-Faces'
+        out_path = 'WGAN-GP'
     else:
         out_path = args.out_path
 
@@ -62,6 +65,6 @@ if __name__ == '__main__':
             img = img.detach().permute(1, 2, 0)
             images.append(img.numpy())
         save_img_name = 'result.gif'
-        save_path = os.path.join(args.out_path, save_img_name)
+        save_path = os.path.join(out_path, save_img_name)
         imageio.mimsave(save_path, images, fps=8)
         print(f'GIF save to {save_path}')
